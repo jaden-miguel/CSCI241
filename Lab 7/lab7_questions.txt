@@ -1,0 +1,186 @@
+Name: Jaden Miguel
+
+Write your answer below each question. Submit your completed file to the Lab 7
+assignment on Canvas.
+
+1. (5 pts) Suppose you are implementing a hash table. For some reason, you will never
+   need to hash anything that's not an integer value. You plan to make sure the size
+   of your table is always a prime number. 
+
+The functions below do not include the modulus; your hash table implementation will take the modulus of the result to compute the correct bucket index. For each of the following candidate functions:
+
+Pre: To clarify this is without the modulus, we are not including this in our definition for now. Although I am answering (c) with modulus in mind. I wasn't sure how this was worded, so I included it to represent my knowledge.
+
+    (a) Say whether it is a valid hash function (i.e., it satisfies all the
+        necessary properties)
+    (b) Say whether it has one or more of the desirable (nice) hash function
+        properties. Explain your answer.
+    (c) Does the answer to (b) change if the size of your table might be even?
+        Explain why or why not. 
+
+
+    h(x) = x
+
+        (a) valid: satisfies returning the same value if called on the same value, two equal values return the same value. hash collisions are possible. "...It is not reasonable to insist that different values have different hash values. There are only
+about 4.3 billion int values..."
+
+        (b) it would be a fast function, but I feel as if it would do a bad job minimizing collisions - thus probably in turn increasing the runtime.
+
+        (c) if the table was even, the number of collisions would depend on what inputs are put into the function. I infer that either way if the table size was even or odd- runtime would be the same. 
+
+
+    h(x) = 2x
+
+        (a) valid:
+	    h(x) = 2(2) 4 
+	    h(x) = 2(2) 4, which is the same value
+	
+	    h(x) = 2(4) 8
+	    h(x) = 2(4) 8, satisfies two equal values must return the same value.
+
+	    hash collisions are possible!
+
+            
+        (b) it would be quick and efficient as the first example, less hash collisions.
+		(without modulus in mind)
+        
+	(c) wouldn't change in runtime with odd or even. depends on inputs!
+
+	    h(x) = 2(5) -> (10 % oddSize)
+	    h(x) = 2(5) -> (10 % evenSize)  yes, different bucket but still depends on 											input.
+		
+ 
+
+    h(x) = x * x
+
+        (a) valid:
+	    h(x) = (7 * 7) 49
+	    h(x) = (7 * 7) 49, same value for two calls
+
+	    h(x) = (10 * 10) 100
+	    h(x) = (10 * 10) 100, satisfies two equal values
+
+	    hash collisions are possible, as the two rules above essentially make this a possibility
+	
+	(b) quick and efficient, as much as possible keeps values hashing to respective hash values
+        
+	(c) depends on inputs once again.
+	
+	    h(x) = (8 * 8) -> (64 % oddSize)
+            h(x) = (8 * 8) -> (64 % evenSize) could reduce runtime, but inputs make this possible
+
+
+    h(x) = x % 10
+
+        (a) valid:
+            h(x) = (10 % 10) 0
+	    h(x) = (10 % 10) 0, same value for two calls
+
+            h(x) = (100 % 10) 0
+	    h(x) = (100 % 10) 0, satisfies two equal values
+	
+	    hash collisions are once again possible.
+        
+	(b) quick and efficient, although would result in hash collisions quite frequently
+        
+	(c) modulo the result, depends on inputs!!
+
+            h(x) = (10 % 10) -> (0 % oddSize)
+            h(x) = (10 % 10) -> (0 % evenSize)
+
+	    h(x) = (9 % 10) -> (9 % oddSize) 
+            h(x) = (9 % 10) -> (9 % evenSize) would change bucket, inputs are what direct this- collisions
+									and runtime would depend ON INPUTS.
+
+
+    h(x) = x * random.nextInt() // assume random is an instance of java.util.Random
+
+        (a) not valid:
+            h(x) = (10 * random.nextInt()) = (10 * ?) 
+            h(x) = (10 * random.nextInt()) = (10 * ?) depends on what random gives you!
+
+            h(x) = (69 * random.nextInt()) = (69 * ?)
+            h(x) = (69 * random.nextInt()) = (69 * ?) doesn't ensure same return value for two equal inputs
+
+	    hash collisions are possible, although not a valid hash function as the random int negates this
+
+
+        (b) not as quick as the above examples, calls random. different inputs will definitely have respective values as 											the randomness ensures this.
+
+        (c) inputs once again reign supreme. this is not a valid hash function in the first place
+
+                h(x) = (10 * random.nextInt()) -> (10 * 7) -> (70 % oddSize) 
+                h(x) = (10 * random.nextInt()) -> (10 * 2) -> (20 % evenSize) not the same result value
+							     
+
+
+
+2. (1 pt)  What does a class's hashCode method return if it's not overridden? In other
+   words, what does the java Object class's hashCode method return?
+
+Object.hashCode always tries to return different hash codes for different objects (regardless if they are equal or not)
+This means that you may end up with different hash codes for two objects that you consider to be equal.
+	
+If a class's hashCode method is not overridden, by default hashCode() returns an integer that represents the internal memory address of the object. The driving feature behind an efficient hash table is the ability to create a hash that is adequately unique for each object. Emphasizing the need to override both equals(Object) and hashCode() when constructing an efficient and correct collection.
+
+
+
+
+3. (4 pts) You are a member of a team of software developers implementing a Course
+   Management System called Linen. You are working on implementing a Student
+   class to store information about each student:
+
+   public class Student {
+       private String firstName;
+       private String lastName;
+       private int wNum; // unique W#
+       private Date lastLogin; // when the student last logged in
+
+       /** Returns whether this is the same student as other */
+       @Override
+       public boolean equals(Student other) {
+         return wNum == other.wNum;
+       }
+
+       public int hashCode() {
+         // code here
+       }
+   }
+
+    You have just written the equals method to override Object's
+    equals method and you're contemplating overriding the
+    hashCode method.
+
+    (a) Do you even need to override hashCode? Why or why not?
+
+	Yes, as I responded to in question 3- we need to override both equals and hashCode. By only overriding equals but not hashCode, hashCode is inherited from Object. Object.hashCode always tries to return different hash codes for different objects (regardless if they are equal or not). Thus meaning you could end up with different hashCodes for two objects that you consider equal. 
+
+If you only override hashCode, but not equals- this wouldn't break the code but may degrade performance. If you don't override equals any two objects will be considered non-equal.
+
+Override both!
+
+
+
+    (b) Assume that W#s (stored in wNum) are unique, so any two student objects
+        with the same wNum represent the same student and will also have the
+        same values in the name fields. Consider each line of code below as a
+        possible implementation of hashCode (to replace the "code here" comment
+        in the class above).  Which of the following implementations would
+        constitute a *valid* hash function? Explain.
+
+        (i)   return firstName.hashCode() + lastName.hashCode();
+        (ii)  return wNum + lastLogin.hashCode();
+        (iii) return wNum;
+        (iv)  return 0;
+
+Validity based on: Same value for two calls, two equal values return the same value, hash collisions possible.
+(i) is valid.
+(ii) not valid, as the last login hash could result in unequal values returned.
+(iii) is valid.
+(iv) technically yes this is valid, but would result in a lot of collisions in the zero bucket.
+
+
+    (c) Which of the above is the *best* hash function? Explain.
+We want a function that adequately spreads values out whilst hashing- minimizing collisions, thus (i) would be the best choice in this instance. 
+
+
